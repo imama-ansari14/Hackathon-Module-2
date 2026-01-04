@@ -493,6 +493,9 @@
                     <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i
                                 class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                 </ul>
+                <button class="btn btn-logout d-none d-md-flex" onclick="window.location.href='login.html'">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
         </div>
     </nav>
@@ -738,7 +741,7 @@
         // LOGOUT FUNCTIONALITY
         // =============================================
         document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-        document.getElementById('logoutBtnDesktop').addEventListener('click', handleLogout);
+        // document.getElementById('logoutBtn').addEventListener('click', handleLogout);
 
         async function handleLogout(e) {
             e.preventDefault();
