@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up Form</title>
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Css -->
+  <!-- <link rel="stylesheet" href="styles.css"> -->
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+      min-height: 100vh;
+    }
+
+    .text-teal {
+      color: #1e293b;
+    }
+
+    .form-wrapper {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-control {
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #d97706;
+      box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.15);
+    }
+
+    .btn {
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #1e293b 0%, #d97706 100%);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0f172a 0%, #b45309 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(227, 109, 19, 0.4);
+    }
+
+    .btn-danger {
+      background: #ffffff;
+      color: #dc3545;
+      border: 2px solid #dc3545;
+    }
+
+    .btn-danger:hover {
+      background: #dc3545;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .text-link {
+      color: #1e293b;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .text-link:hover {
+      color: #d97706;
+    }
+
+    .particle {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 20s infinite ease-in-out;
+      z-index: 0;
+      filter: blur(2px);
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.3;
+      }
+
+      25% {
+        transform: translateY(-40px) translateX(40px) scale(1.1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: translateY(-20px) translateX(-30px) scale(0.9);
+        opacity: 0.4;
+      }
+
+      75% {
+        transform: translateY(30px) translateX(-40px) scale(1.05);
+        opacity: 0.35;
+      }
+    }
+
+    .particle:nth-child(1) {
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.4) 0%, rgba(217, 119, 6, 0.1) 70%);
+      top: 15%;
+      left: 10%;
+      animation-duration: 18s;
+    }
+
+    .particle:nth-child(2) {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(251, 191, 36, 0.05) 70%);
+      top: 65%;
+      left: 75%;
+      animation-delay: 7s;
+      animation-duration: 22s;
+    }
+
+    .particle:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.35) 0%, rgba(217, 119, 6, 0.08) 70%);
+      top: 45%;
+      left: 8%;
+      animation-delay: 12s;
+      animation-duration: 25s;
+    }
+
+    .particle:nth-child(4) {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, rgba(251, 191, 36, 0.05) 70%);
+      top: 25%;
+      right: 15%;
+      animation-delay: 4s;
+      animation-duration: 20s;
+    }
+
+    .particle:nth-child(5) {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.4) 0%, rgba(217, 119, 6, 0.1) 70%);
+      bottom: 20%;
+      right: 25%;
+      animation-delay: 9s;
+      animation-duration: 19s;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating particles -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="form-wrapper p-4 p-md-5">
+          <h1 class="text-center fw-bold mb-2">Create Account</h1>
+          <p class="text-center text-muted mb-4">Join us today and get started!</p>
+
+          <form>
+            <div class="mb-3">
+              <label for="nameInput" class="form-label fw-semibold">
+                <i class="fas fa-user me-2 text-teal"></i>Full Name
+              </label>
+              <input type="text" class="form-control form-control-lg" id="nameInput" placeholder="Enter your name">
+            </div>
+
+            <div class="mb-3">
+              <label for="emailInput" class="form-label fw-semibold">
+                <i class="fas fa-envelope me-2 text-teal"></i>Email Address
+              </label>
+              <input type="email" class="form-control form-control-lg" id="emailInput" aria-describedby="emailHelp"
+                placeholder="Enter your email">
+              <div id="emailHelp" class="form-text">
+                <i class="fas fa-shield-alt me-1"></i>We'll never share your email with anyone else.
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="passwordInput" class="form-label fw-semibold">
+                <i class="fas fa-lock me-2 text-teal"></i>Password
+              </label>
+              <input type="password" class="form-control form-control-lg" id="passwordInput"
+                placeholder="Create a strong password">
+            </div>
+
+            <div class="d-grid gap-2 mb-3">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Sign Up
+              </button>
+            </div>
+
+            <div class="d-flex align-items-center my-3">
+              <hr class="flex-grow-1">
+              <span class="px-3 text-muted small fw-semibold">OR</span>
+              <hr class="flex-grow-1">
+            </div>
+
+            <p class="text-center mt-4 mb-0">
+              Already have an account?
+              <a href="login.html" class="text-link text-decoration-none">Log in</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <!-- SupaBase Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SWEET ALERT -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- JS File -->
+  <script>
+    // =============================================
+    // SUPABASE CLIENT INITIALIZATION
+    // =============================================
+    const supabaseUrl = "https://qmujsllexgevhzpkuygo.supabase.co";
+    const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // =============================================
+    // PAGE LOAD
+    // =============================================
+    document.addEventListener("DOMContentLoaded", () => {
+      handleSignupPage();
+    });
+
+    // =============================================
+    // SIGNUP FUNCTION
+    // =============================================
+    function handleSignupPage() {
+      const form = document.querySelector("form");
+      const nameInput = document.getElementById("nameInput");
+      const emailInput = document.getElementById("emailInput");
+      const passwordInput = document.getElementById("passwordInput");
+
+      if (!form) return;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!name || !email || !password) {
+          Swal.fire({
+            icon: "warning",
+            title: "Missing Fields",
+            text: "Please fill all fields before signing up.",
+          });
+          return;
+        }
+
+        // ADMIN SIGNUP
+        if (
+          email === "hina@yahoo.com" &&
+          password === "123456" &&
+          name.toLowerCase() === "hina"
+        ) {
+          Swal.fire({
+            icon: "success",
+            title: "Admin Signup Successful!",
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.href = "dashboard.html";
+          });
+          return;
+        }
+
+        // NORMAL USER SIGNUP
+        try {
+          const { error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              data: { full_name: name },
+            },
+          });
+
+          if (error) throw error;
+
+          Swal.fire({
+            icon: "success",
+            title: "Signup Successful!",
+            text: "Redirecting to Home...",
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.href = "index.html";
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Signup Failed",
+            text: error.message,
+          });
+        }
+      });
+    }
+  </script>
+
+
+</body>
+
+</html>
