@@ -12,223 +12,348 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Custom Css -->
-  <!-- <link rel="stylesheet" href="styles.css"> -->
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+      overflow-x: hidden;
+    }
+
+    .split-container {
+      display: flex;
       min-height: 100vh;
     }
 
-    .text-teal {
-      color: #1e293b;
+    /* Left Side - Image */
+    .image-side {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(217, 119, 6, 0.8) 100%),
+        url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1200') center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
     }
 
-    .form-wrapper {
+    .image-side::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      top: -100px;
+      left: -100px;
+      animation: pulse 8s infinite ease-in-out;
+    }
+
+    .image-side::after {
+      content: '';
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      bottom: -80px;
+      right: -80px;
+      animation: pulse 10s infinite ease-in-out reverse;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    .image-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 500px;
+    }
+
+    .image-content h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .image-content p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      opacity: 0.95;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-list {
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .feature-item i {
+      margin-right: 1rem;
+      font-size: 1.5rem;
+      color: #fbbf24;
+    }
+
+    /* Right Side - Form */
+    .form-side {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
       background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .form-container h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-container .subtitle {
+      color: #64748b;
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
     }
 
     .form-control {
-      border-radius: 8px;
-      padding: 12px 16px;
+      border-radius: 10px;
+      padding: 14px 18px;
+      border: 2px solid #e2e8f0;
       transition: all 0.3s ease;
+      font-size: 1rem;
     }
 
     .form-control:focus {
       border-color: #d97706;
-      box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.15);
+      box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.1);
+      outline: none;
     }
 
-    .btn {
-      border-radius: 8px;
-      padding: 12px;
+    .form-label {
       font-weight: 600;
-      transition: all 0.3s ease;
+      color: #334155;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-label i {
+      color: #d97706;
+      margin-right: 0.5rem;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, #1e293b 0%, #d97706 100%);
       border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
+      width: 100%;
     }
 
     .btn-primary:hover {
       background: linear-gradient(135deg, #0f172a 0%, #b45309 100%);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(227, 109, 19, 0.4);
+      box-shadow: 0 8px 25px rgba(217, 119, 6, 0.3);
     }
 
-    .btn-danger {
-      background: #ffffff;
-      color: #dc3545;
-      border: 2px solid #dc3545;
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 2rem 0;
     }
 
-    .btn-danger:hover {
-      background: #dc3545;
-      color: #ffffff;
-      transform: translateY(-2px);
+    .divider hr {
+      flex: 1;
+      border: none;
+      border-top: 1px solid #e2e8f0;
     }
 
-    .text-link {
-      color: #1e293b;
+    .divider span {
+      padding: 0 1rem;
+      color: #94a3b8;
       font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #64748b;
+    }
+
+    .login-link a {
+      color: #d97706;
+      font-weight: 600;
+      text-decoration: none;
       transition: color 0.3s ease;
     }
 
-    .text-link:hover {
-      color: #d97706;
+    .login-link a:hover {
+      color: #b45309;
     }
 
-    .particle {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      animation: float 20s infinite ease-in-out;
-      z-index: 0;
-      filter: blur(2px);
+    .form-text {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.5rem;
     }
 
-    @keyframes float {
+    .form-text i {
+      color: #10b981;
+    }
 
-      0%,
-      100% {
-        transform: translateY(0) translateX(0) scale(1);
-        opacity: 0.3;
+    /* Responsive */
+    @media (max-width: 992px) {
+      .split-container {
+        flex-direction: column;
       }
 
-      25% {
-        transform: translateY(-40px) translateX(40px) scale(1.1);
-        opacity: 0.5;
+      .image-side {
+        min-height: 40vh;
+        padding: 2rem;
       }
 
-      50% {
-        transform: translateY(-20px) translateX(-30px) scale(0.9);
-        opacity: 0.4;
+      .image-content h1 {
+        font-size: 2rem;
       }
 
-      75% {
-        transform: translateY(30px) translateX(-40px) scale(1.05);
-        opacity: 0.35;
+      .image-content p {
+        font-size: 1rem;
+      }
+
+      .feature-list {
+        display: none;
+      }
+
+      .form-side {
+        padding: 2rem 1.5rem;
+      }
+
+      .form-container h2 {
+        font-size: 2rem;
       }
     }
 
-    .particle:nth-child(1) {
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, rgba(217, 119, 6, 0.4) 0%, rgba(217, 119, 6, 0.1) 70%);
-      top: 15%;
-      left: 10%;
-      animation-duration: 18s;
-    }
+    @media (max-width: 576px) {
+      .image-side {
+        min-height: 30vh;
+        padding: 1.5rem;
+      }
 
-    .particle:nth-child(2) {
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, rgba(251, 191, 36, 0.3) 0%, rgba(251, 191, 36, 0.05) 70%);
-      top: 65%;
-      left: 75%;
-      animation-delay: 7s;
-      animation-duration: 22s;
-    }
-
-    .particle:nth-child(3) {
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, rgba(217, 119, 6, 0.35) 0%, rgba(217, 119, 6, 0.08) 70%);
-      top: 45%;
-      left: 8%;
-      animation-delay: 12s;
-      animation-duration: 25s;
-    }
-
-    .particle:nth-child(4) {
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(251, 191, 36, 0.25) 0%, rgba(251, 191, 36, 0.05) 70%);
-      top: 25%;
-      right: 15%;
-      animation-delay: 4s;
-      animation-duration: 20s;
-    }
-
-    .particle:nth-child(5) {
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle, rgba(217, 119, 6, 0.4) 0%, rgba(217, 119, 6, 0.1) 70%);
-      bottom: 20%;
-      right: 25%;
-      animation-delay: 9s;
-      animation-duration: 19s;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
+      .form-container h2 {
+        font-size: 1.75rem;
+      }
     }
   </style>
 </head>
 
 <body>
-  <!-- Floating particles -->
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
+  <div class="split-container">
+    <!-- Left Side - Image -->
+    <div class="image-side">
+      <div class="image-content">
 
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-        <div class="form-wrapper p-4 p-md-5">
-          <h1 class="text-center fw-bold mb-2">Create Account</h1>
-          <p class="text-center text-muted mb-4">Join us today and get started!</p>
+        <h1> <img src="img/logo.png" alt="logo" class="mx-3">Welcome!</h1>
+        <p>Join thousands of users who trust us with their journey. Create your account and unlock amazing features.</p>
 
-          <form>
-            <div class="mb-3">
-              <label for="nameInput" class="form-label fw-semibold">
-                <i class="fas fa-user me-2 text-teal"></i>Full Name
-              </label>
-              <input type="text" class="form-control form-control-lg" id="nameInput" placeholder="Enter your name">
-            </div>
-
-            <div class="mb-3">
-              <label for="emailInput" class="form-label fw-semibold">
-                <i class="fas fa-envelope me-2 text-teal"></i>Email Address
-              </label>
-              <input type="email" class="form-control form-control-lg" id="emailInput" aria-describedby="emailHelp"
-                placeholder="Enter your email">
-              <div id="emailHelp" class="form-text">
-                <i class="fas fa-shield-alt me-1"></i>We'll never share your email with anyone else.
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <label for="passwordInput" class="form-label fw-semibold">
-                <i class="fas fa-lock me-2 text-teal"></i>Password
-              </label>
-              <input type="password" class="form-control form-control-lg" id="passwordInput"
-                placeholder="Create a strong password">
-            </div>
-
-            <div class="d-grid gap-2 mb-3">
-              <button type="submit" class="btn btn-primary btn-lg">
-                <i class="fas fa-user-plus me-2"></i>Sign Up
-              </button>
-            </div>
-
-            <div class="d-flex align-items-center my-3">
-              <hr class="flex-grow-1">
-              <span class="px-3 text-muted small fw-semibold">OR</span>
-              <hr class="flex-grow-1">
-            </div>
-
-            <p class="text-center mt-4 mb-0">
-              Already have an account?
-              <a href="login.html" class="text-link text-decoration-none">Log in</a>
-            </p>
-          </form>
+        <div class="feature-list">
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Secure and encrypted data</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>24/7 customer support</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Easy to use interface</span>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="form-side">
+      <div class="form-container">
+        <h2>Create Account</h2>
+        <p class="subtitle">Fill in your details to get started</p>
+
+        <form>
+          <div class="mb-3">
+            <label for="nameInput" class="form-label">
+              <i class="fas fa-user"></i>Full Name
+            </label>
+            <input type="text" class="form-control" id="nameInput" placeholder="Enter your name">
+          </div>
+
+          <div class="mb-3">
+            <label for="emailInput" class="form-label">
+              <i class="fas fa-envelope"></i>Email Address
+            </label>
+            <input type="email" class="form-control" id="emailInput" placeholder="Enter your email">
+            <div class="form-text">
+              <i class="fas fa-shield-alt"></i> We'll never share your email with anyone else.
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="passwordInput" class="form-label">
+              <i class="fas fa-lock"></i>Password
+            </label>
+            <input type="password" class="form-control" id="passwordInput" placeholder="Create a strong password">
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>Sign Up
+          </button>
+
+          <div class="divider">
+            <hr>
+            <span>OR</span>
+            <hr>
+          </div>
+
+          <div class="login-link">
+            Already have an account? <a href="login.html">Log in</a>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -320,7 +445,7 @@
             showConfirmButton: false,
             timer: 2000,
           }).then(() => {
-            window.location.href = "index.html";
+            window.location.href = "user.html";
           });
         } catch (error) {
           Swal.fire({
@@ -332,8 +457,6 @@
       });
     }
   </script>
-
-
 </body>
 
 </html>

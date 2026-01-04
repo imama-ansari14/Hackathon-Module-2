@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Posts - POST App</title>
+    <!-- BOOTSTRAP CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icon CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- ANIMATE.CSS CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #1e293b;
+        }
+
+        .nav-link {
+            color: #64748b;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .nav-link:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .nav-link.active {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-email {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* Header Section */
+        .page-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .btn-create-new {
+            background-color: #d97706;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-create-new:hover {
+            background-color: #b45309;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stats-info h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+
+        .stats-info p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            min-width: 200px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            padding: 10px 15px;
+        }
+
+        .filter-select:focus {
+            border-color: #d97706;
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.1);
+        }
+
+        /* Posts Section */
+        .posts-section {
+            padding: 0 0 4rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table View */
+        .posts-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead {
+            background-color: #f8fafc;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .post-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .post-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .post-details h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .post-details p {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-published {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-draft {
+            background-color: #fef3c7;
+            color: #854d0e;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-view:hover {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .btn-edit:hover {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-delete:hover {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1e293b 0%, #d97706 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            padding: 12px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #d97706;
+            box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.1);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #1e293b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #0f172a 0%, #b45309 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #d97706;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-create-new {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .posts-table {
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 800px;
+            }
+
+            .user-email {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <div class="brand-icon">
+                    <img src="img/logo.png" alt="">
+                </div>
+                Postagram
+            </a>
+
+            <div class="nav-links d-none d-md-flex mx-auto">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-home me-1"></i> Feed
+                </a>
+                <a class="nav-link active" href="my-posts.html">
+                    <i class="fas fa-folder me-1"></i> My Posts
+                </a>
+            </div>
+
+            <div class="user-info ms-auto">
+                <span class="user-email d-none d-md-inline" id="userEmail">Loading...</span>
+                <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="userAvatar">
+                    ?
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i
+                                class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="animate__animated animate__fadeInLeft">
+                        <h1>My Posts</h1>
+                        <p>Manage and organize all your content</p>
+                        <div class="header-actions">
+                            <button class="btn btn-create-new" data-bs-toggle="modal" data-bs-target="#createPostModal">
+                                <i class="fas fa-plus"></i> Create New Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-3 mt-3 mt-lg-0">
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                            <div class="stats-card">
+                                <div class="stats-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="stats-info">
+                                    <h3 id="totalPosts">0</h3>
+                                    <p>Total Posts</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                            <div class="stats-card">
+                                <div class="stats-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="stats-info">
+                                    <h3 id="totalViews">0</h3>
+                                    <p>Total Views</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="container">
+        <div class="filter-section" data-aos="fade-up">
+            <div class="filter-group">
+                <label class="fw-semibold text-secondary">Filter by:</label>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Programming">Programming</option>
+                    <option value="Design">Design</option>
+                    <option value="Photography">Photography</option>
+                    <option value="Lifestyle">Lifestyle</option>
+                    <option value="Travel">Travel</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Posts Section -->
+    <section class="posts-section">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <i class="fas fa-list"></i>
+                <span>Your Posts</span>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading your posts...</p>
+            </div>
+
+            <!-- Posts Table -->
+            <div class="posts-table d-none" id="postsTable" data-aos="fade-up" data-aos-delay="100">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Post</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="postsTableBody">
+                        <!-- Posts will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create/Edit Post Modal -->
+    <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createPostModalLabel">
+                        <i class="fas fa-pen-fancy me-2"></i><span id="modalTitle">Create New Post</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="postForm">
+                        <input type="hidden" id="postId" value="">
+
+                        <div class="mb-3">
+                            <label for="postTitle" class="form-label">
+                                <i class="fas fa-heading me-2 text-primary"></i>Post Title
+                            </label>
+                            <input type="text" class="form-control" id="postTitle"
+                                placeholder="Enter an engaging title..." required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="postAuthor" class="form-label">
+                                <i class="fas fa-user-edit me-2 text-success"></i>Author Name
+                            </label>
+                            <input type="text" class="form-control" id="postAuthor" placeholder="Your name..." required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="postCategory" class="form-label">
+                                <i class="fas fa-tag me-2 text-warning"></i>Category
+                            </label>
+                            <select class="form-select" id="postCategory" required>
+                                <option value="">Select a category...</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Programming">Programming</option>
+                                <option value="Design">Design</option>
+                                <option value="Photography">Photography</option>
+                                <option value="Lifestyle">Lifestyle</option>
+                                <option value="Travel">Travel</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="postImage" class="form-label">
+                                <i class="fas fa-image me-2 text-info"></i>Image URL
+                            </label>
+                            <input type="url" class="form-control" id="postImage"
+                                placeholder="https://example.com/image.jpg" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="postDescription" class="form-label">
+                                <i class="fas fa-align-left me-2 text-danger"></i>Description
+                            </label>
+                            <textarea class="form-control" id="postDescription" rows="4"
+                                placeholder="Write your post content here..." required></textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-submit">
+                                <i class="fas fa-save me-2"></i><span id="submitBtnText">Create Post</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <!-- SWEET ALERT -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SupaBase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // =============================================
+        // SUPABASE CLIENT INITIALIZATION
+        // =============================================
+        const supabaseUrl = "https://qmujsllexgevhzpkuygo.supabase.co";
+        const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentUser = null;
+        let allPosts = [];
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // =============================================
+        // PAGE LOAD - CHECK AUTH & LOAD POSTS
+        // =============================================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadUserPosts();
+        });
+
+        // =============================================
+        // CHECK AUTHENTICATION
+        // =============================================
+        async function checkAuth() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+                if (error || !user) {
+                    // Redirect to login if not authenticated
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                currentUser = user;
+
+                // Update UI with user info
+                const email = user.email || 'user@example.com';
+                const initials = email.substring(0, 2).toUpperCase();
+
+                document.getElementById('userEmail').textContent = email;
+                document.getElementById('userAvatar').textContent = initials;
+
+                // Pre-fill author name in form
+                document.getElementById('postAuthor').value = user.user_metadata?.full_name || email.split('@')[0];
+
+            } catch (error) {
+                console.error('Auth check error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+        // =============================================
+        // LOGOUT FUNCTIONALITY
+        // =============================================
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('logoutBtnDesktop').addEventListener('click', handleLogout);
+
+        async function handleLogout(e) {
+            e.preventDefault();
+
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+
+                if (error) throw error;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logged Out',
+                    text: 'You have been logged out successfully.',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'login.html';
+                });
+
+            } catch (error) {
+                console.error('Logout error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Logout Failed',
+                    text: error.message
+                });
+            }
+        }
+
+        // =============================================
+        // LOAD USER POSTS FROM SUPABASE
+        // =============================================
+        async function loadUserPosts() {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const postsTable = document.getElementById('postsTable');
+
+            try {
+                loadingSpinner.classList.remove('d-none');
+                postsTable.classList.add('d-none');
+
+                // Fetch posts from Supabase
+                const { data: posts, error } = await supabaseClient
+                    .from('posts')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allPosts = posts || [];
+
+                // Update stats
+                document.getElementById('totalPosts').textContent = allPosts.length;
+
+                // Hide loading spinner
+                loadingSpinner.classList.add('d-none');
+
+                if (allPosts.length > 0) {
+                    postsTable.classList.remove('d-none');
+                    renderPosts(allPosts);
+                }
+
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                loadingSpinner.classList.add('d-none');
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Loading Posts',
+                    text: error.message
+                });
+            }
+        }
+        // =============================================
+        // TIME AGO HELPER FUNCTION
+        // =============================================
+        function getTimeAgo(dateString) {
+            const now = new Date();
+            const postDate = new Date(dateString);
+            const seconds = Math.floor((now - postDate) / 1000);
+
+            const intervals = [
+                { label: 'year', seconds: 31536000 },
+                { label: 'month', seconds: 2592000 },
+                { label: 'day', seconds: 86400 },
+                { label: 'hour', seconds: 3600 },
+                { label: 'minute', seconds: 60 }
+            ];
+
+            for (const interval of intervals) {
+                const count = Math.floor(seconds / interval.seconds);
+                if (count >= 1) {
+                    return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
+                }
+            }
+
+            return 'Just now';
+        }
+
+        // =============================================
+        // RENDER POSTS IN TABLE
+        // =============================================
+        function renderPosts(posts) {
+            const tbody = document.getElementById('postsTableBody');
+            tbody.innerHTML = '';
+
+            posts.forEach(post => {
+                const date = new Date(post.created_at);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+            <td>
+                <div class="post-info">
+                    <img 
+                        src="${post.image_url || 'img/no-image.png'}"
+                        alt="${post.title}"
+                        class="post-thumbnail"
+                        onerror="this.onerror=null; this.src='img/no-image.png';">
+                    <div class="post-details">
+                        <h5>${post.title}</h5>
+                        <p>By ${post.author} • ${formattedDate}</p>
+                    </div>
+                </div>
+            </td>
+            <td><span class="badge bg-primary">${post.category}</span></td>
+            <td><span class="status-badge status-published">Published</span></td>
+            <td>${getTimeAgo(post.created_at)}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-action btn-edit" onclick="editPost('${post.id}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-action btn-delete" onclick="deletePost('${post.id}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+                tbody.appendChild(row);
+            });
+        }
+
+
+        // Delete Post Function
+        async function deletePost(postId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('posts')
+                    .delete()
+                    .eq('id', postId);
+
+                if (error) throw error;
+
+                // Reload the posts after deletion
+                await loadUserPosts();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Post Deleted',
+                    text: 'The post has been deleted successfully.'
+                });
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Deleting Post',
+                    text: error.message
+                });
+            }
+        }
+
+        // =============================================
+        // EDIT POST FUNCTION
+        // =============================================
+        function editPost(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            // Fill modal inputs with existing data
+            document.getElementById('postId').value = post.id;
+            document.getElementById('postTitle').value = post.title;
+            document.getElementById('postAuthor').value = post.author;
+            document.getElementById('postCategory').value = post.category;
+            document.getElementById('postImage').value = post.image_url;
+            document.getElementById('postDescription').value = post.description;
+
+            // Change modal text
+            document.getElementById('modalTitle').innerText = 'Edit Post';
+            document.getElementById('submitBtnText').innerText = 'Update Post';
+
+            // Open modal
+            const modal = new bootstrap.Modal(document.getElementById('createPostModal'));
+            modal.show();
+        }
+
+
+        // =============================================
+        // CREATE / UPDATE POST
+        // =============================================
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const postId = document.getElementById('postId').value;
+            const title = document.getElementById('postTitle').value;
+            const author = document.getElementById('postAuthor').value;
+            const category = document.getElementById('postCategory').value;
+            const imageUrl = document.getElementById('postImage').value;
+            const description = document.getElementById('postDescription').value;
+
+            try {
+                let response;
+
+                if (postId) {
+                    // UPDATE POST
+                    response = await supabaseClient
+                        .from('posts')
+                        .update({
+                            title,
+                            author,
+                            category,
+                            image_url: imageUrl,
+                            description
+                        })
+                        .eq('id', postId);
+                } else {
+                    // CREATE POST
+                    response = await supabaseClient
+                        .from('posts')
+                        .insert([{
+                            title,
+                            author,
+                            category,
+                            image_url: imageUrl,
+                            description,
+                            user_id: currentUser.id
+                        }]);
+                }
+
+                if (response.error) throw response.error;
+
+                // Reset form
+                document.getElementById('postForm').reset();
+                document.getElementById('postId').value = '';
+                document.getElementById('modalTitle').innerText = 'Create New Post';
+                document.getElementById('submitBtnText').innerText = 'Create Post';
+
+                await loadUserPosts();
+
+                bootstrap.Modal.getInstance(
+                    document.getElementById('createPostModal')
+                ).hide();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: postId ? 'Post Updated' : 'Post Created',
+                    text: 'Your post has been successfully ' + (postId ? 'updated.' : 'created.'),
+                    timer: 1500,
+                    showConfirmButton: false
+
+                });
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message
+                });
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>

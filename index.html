@@ -1,154 +1,516 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-      <!-- BOOTSTRAP CDN -->
-    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.min.css">
-    <!-- FontAwsome Icon CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- ANIMATE.CSS CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <!--AOS CSS  -->
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <!-- CSS Style Sheet -->
-<!-- <link rel="stylesheet" href="styles.css"> -->
- <style>/* Navbar */
-.navbar {
-  background-color: var(--darker-bg) !important;
-  border-bottom: 1px solid var(--primary-purple);
-}
-
-.navbar-brand {
-  color: var(--primary-purple) !important;
-  font-weight: bold;
-}
-
-.nav-link {
-  color: var(--light-text) !important;
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-  color: var(--primary-purple) !important;
-}
-
-/* Hero section */
-.heading{
-  color: var(--primary-purple);
-}
-#home {
-  background: url(images/hero-sec.jpg) no-repeat center center/cover;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  color: #fff;
-  padding: 60px 20px;
-  text-align: center;
-  z-index: 1;
-}
-
-#home::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: -1;
-}
-
-#home h1 {
-  font-size: 3.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-#home .lead {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-}
-.hero-subtitle {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 5rem;
-  font-weight: bold;
-  padding: 0px 0;
-}
-
-.hero-subtitle span {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.5s forwards;
-}
-
-</style>
-</head>
-<body>
- <!-- NAVBAR -->
-    <header class="fixed-top">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">Imama Ansari</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#home">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#about">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#projects">Projects</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#contact">Contact</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <!-- HERO SECTION -->
-
-    <main>
-        <section id="home">
-            <div class="hero-content">
-                <h1 class="hero-title">Hi, I'm <span class="heading"> Imama Ansari </span></h1>
-                <p class="lead hero-subtitle">
-                    <span>A</span>
-                    <span>Creative</span>
-                    <span>Frontend</span>
-                    <span>Developer</span>
-                    <span>and</span>
-                    <span>passionate</span>
-                    <span>learner</span>
-                </p>
-
-
-                <a href="#projects" class="btn btn-primary btn-lg custom-btn hero-btn">
-                    View My Work <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-            <div class="scroll-down animate__animated animate__fadeInDown animate__delay-3s">
-                <a href="#about"> <i class="bi bi-chevron-double-down fs-3 text-white"></i></a>
-            </div>
-          </section>
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed Page</title>
   <!-- BOOTSTRAP CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-        <!-- Js -->
-    <script src="app.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icon CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- ANIMATE.CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f8f9fa;
+      min-height: 100vh;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #1e293b;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-email {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .user-avatar:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-logout {
+      background-color: transparent;
+      border: 2px solid #e2e8f0;
+      color: #64748b;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-logout:hover {
+      background-color: #fee2e2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 2.5rem 0 1.5rem;
+    }
+
+    .welcome-text h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+
+    }
+
+    .welcome-text p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+
+    .search-bar {
+      position: relative;
+      max-width: 600px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      border-radius: 50px;
+      border: none;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+
+
+    /* Posts Grid */
+    .posts-container {
+      padding: 2rem 0;
+    }
+
+    .post-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .post-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .post-content {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .post-meta span {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .post-description {
+      color: #64748b;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-top: auto;
+    }
+
+    /* Create Post Modal */
+    .modal-content {
+      border-radius: 16px;
+      border: none;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #1e293b 0%, #d97706 100%);
+      color: white;
+      border-radius: 16px 16px 0 0;
+      padding: 1.5rem;
+    }
+
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+
+    .btn-close {
+      filter: brightness(0) invert(1);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #d97706;
+      box-shadow: 0 0 0 0.25rem rgba(217, 119, 6, 0.1);
+    }
+
+    .btn-submit-post {
+      background: linear-gradient(135deg, #1e293b 0%, #d97706 100%);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-submit-post:hover {
+      background: linear-gradient(135deg, #0f172a 0%, #b45309 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-section {
+        text-align: center;
+      }
+
+      .welcome-text h1 {
+        font-size: 1.5rem;
+      }
+
+      .user-email {
+        display: none;
+      }
+
+      .btn-create-post {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <div class="brand-icon">
+          <img src="img/logo.png" alt="">
+        </div>
+        POST App
+      </a>
+
+      <div class="user-info ms-auto">
+        <span class="user-email d-none d-md-inline">user@gmail.com</span>
+        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
+          DU
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><a class="dropdown-item text-danger" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-8 col-md-7">
+          <div class="welcome-text animate__animated animate__fadeInLeft">
+            <h1>Grab Your Coffe And Explore the Feed!</h1>
+            <p>Explore the latest blog posts from our community</p>
+          </div>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search posts, authors, or topics...">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Posts Grid -->
+  <section class="posts-container">
+    <div class="container">
+      <div class="row g-4" id="postsGrid"></div>
+
+    </div>
+  </section>
+
+  <!-- Create Post Modal -->
+  <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createPostModalLabel">
+            <i class="fas fa-pen-fancy me-2"></i>Create New Post
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="createPostForm">
+            <div class="mb-3">
+              <label for="postTitle" class="form-label">
+                <i class="fas fa-heading me-2 text-primary"></i>Post Title
+              </label>
+              <input type="text" class="form-control" id="postTitle" placeholder="Enter an engaging title..." required>
+            </div>
+
+            <div class="mb-3">
+              <label for="postAuthor" class="form-label">
+                <i class="fas fa-user-edit me-2 text-success"></i>Author Name
+              </label>
+              <input type="text" class="form-control" id="postAuthor" placeholder="Your name..." required>
+            </div>
+
+            <div class="mb-3">
+              <label for="postCategory" class="form-label">
+                <i class="fas fa-tag me-2 text-warning"></i>Category
+              </label>
+              <select class="form-select" id="postCategory" required>
+                <option value="">Select a category...</option>
+                <option value="Technology">Technology</option>
+                <option value="Programming">Programming</option>
+                <option value="Design">Design</option>
+                <option value="Photography">Photography</option>
+                <option value="Lifestyle">Lifestyle</option>
+                <option value="Travel">Travel</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="postImage" class="form-label">
+                <i class="fas fa-image me-2 text-info"></i>Image URL
+              </label>
+              <input type="url" class="form-control" id="postImage" placeholder="https://example.com/image.jpg"
+                required>
+            </div>
+
+            <div class="mb-4">
+              <label for="postDescription" class="form-label">
+                <i class="fas fa-align-left me-2 text-danger"></i>Description
+              </label>
+              <textarea class="form-control" id="postDescription" rows="4" placeholder="Write your post content here..."
+                required></textarea>
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-submit-post">
+                <i class="fas fa-paper-plane me-2"></i>Publish Post
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- SWEET ALERT -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- SupaBase Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100
+    });
+
+    const supabaseUrl = "https://qmujsllexgevhzpkuygo.supabase.co";
+    const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadFeedPosts();
+    });
+
+    async function loadFeedPosts() {
+      const grid = document.getElementById("postsGrid");
+      if (!grid) return;
+
+      grid.innerHTML = "";
+
+      const { data: posts, error } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        Swal.fire("Error", "Failed to load feed", "error");
+        return;
+      }
+
+      posts.forEach(post => {
+        const date = new Date(post.created_at).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        });
+
+        grid.innerHTML += `
+        <div class="col-lg-4 col-md-6" data-aos="fade-up">
+          <div class="post-card">
+            <img
+              src="${post.image_url || 'img/no-image.png'}"
+              class="post-image"
+              onerror="this.onerror=null;this.src='img/no-image.png';"
+            >
+            <div class="post-content">
+              <h3 class="post-title">${post.title}</h3>
+              <div class="post-meta">
+                <span><i class="fas fa-user"></i> ${post.author}</span>
+                <span>•</span>
+                <span><i class="fas fa-calendar"></i> ${date}</span>
+              </div>
+              <p class="post-description">
+                ${(post.description || "").substring(0, 120)}...
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      });
+
+      AOS.refresh();
+    }
+
+    document.getElementById("createPostForm").addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const post = {
+        title: postTitle.value,
+        author: postAuthor.value,
+        category: postCategory.value,
+        image_url: postImage.value,
+        description: postDescription.value
+      };
+
+      const { error } = await supabaseClient
+        .from("posts")
+        .insert([post]);
+
+      if (error) {
+        Swal.fire("Error", error.message, "error");
+        return;
+      }
+
+      Swal.fire("Success", "Post published!", "success");
+      bootstrap.Modal.getInstance(createPostModal).hide();
+      e.target.reset();
+      loadFeedPosts();
+    });
+  </script>
+
 </body>
+
 </html>
