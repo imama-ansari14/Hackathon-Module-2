@@ -95,6 +95,10 @@
       color: #ef4444;
     }
 
+    .post-btn {
+      background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+    }
+
     /* Hero Section */
     .hero-section {
       padding: 2.5rem 0 1.5rem;
@@ -298,9 +302,10 @@
       </a>
 
       <div class="user-info ms-auto">
-        <span class="user-email d-none d-md-inline">user@gmail.com</span>
-        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false">
-          DU
+        <!-- Add this element to display the email dynamically -->
+        <span class="user-email d-none d-md-inline" id="navbarEmail">Loading...</span>
+        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="userAvatar">
+          ?
         </div>
         <ul class="dropdown-menu dropdown-menu-end">
           <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
@@ -310,6 +315,7 @@
           </li>
           <li><a class="dropdown-item text-danger" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
           </li>
+          <a href="signup.html"><button class="post-btn">Post Now</button></a>
         </ul>
       </div>
     </div>
@@ -429,10 +435,41 @@
     const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    document.addEventListener("DOMContentLoaded", () => {
+    let currentUser = null;
+
+    // ============================================
+    // Check auth & show dynamic email
+    // ============================================
+    document.addEventListener("DOMContentLoaded", async () => {
+      await checkAuth();
       loadFeedPosts();
     });
 
+    async function checkAuth() {
+      try {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        if (error || !user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        currentUser = user;
+
+        // Update navbar email dynamically
+        const navbarEmail = document.getElementById("navbarEmail");
+        if (navbarEmail) {
+          navbarEmail.textContent = user.email || "user@example.com";
+        }
+
+      } catch (err) {
+        console.error(err);
+        window.location.href = "login.html";
+      }
+    }
+
+    // ============================================
+    // Load Feed Posts
+    // ============================================
     async function loadFeedPosts() {
       const grid = document.getElementById("postsGrid");
       if (!grid) return;
@@ -452,63 +489,68 @@
 
       posts.forEach(post => {
         const date = new Date(post.created_at).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric"
+          month: "short", day: "numeric", year: "numeric"
         });
 
         grid.innerHTML += `
-        <div class="col-lg-4 col-md-6" data-aos="fade-up">
-          <div class="post-card">
-            <img
-              src="${post.image_url || 'img/no-image.png'}"
-              class="post-image"
-              onerror="this.onerror=null;this.src='img/no-image.png';"
-            >
-            <div class="post-content">
-              <h3 class="post-title">${post.title}</h3>
-              <div class="post-meta">
-                <span class="fw-bold text-black"><i class="fas fa-user"></i> ${post.author}</span>
-                <span>•</span>
-                <span><i class="fas fa-calendar"></i> ${date}</span>
-              </div>
-              <p class="post-description">
-                ${(post.description || "").substring(0, 120)}...
-              </p>
+      <div class="col-lg-4 col-md-6" data-aos="fade-up">
+        <div class="post-card">
+          <img
+            src="${post.image_url || 'img/no-image.png'}"
+            class="post-image"
+            onerror="this.onerror=null;this.src='img/no-image.png';"
+          >
+          <div class="post-content">
+            <h3 class="post-title">${post.title}</h3>
+            <div class="post-meta">
+              <span class="fw-bold text-black"><i class="fas fa-user"></i> ${post.author}</span>
+              <span>•</span>
+              <span><i class="fas fa-calendar"></i> ${date}</span>
             </div>
+            <p class="post-description">
+              ${(post.description || "").substring(0, 120)}...
+            </p>
+            <button class="btn btn-sm btn-dark view-details-btn" data-id="${post.id}">View details</button>
           </div>
         </div>
-      `;
+      </div>
+    `;
       });
 
       AOS.refresh();
+
+      // Add click event to all "View details" buttons
+      document.querySelectorAll(".view-details-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const postId = btn.getAttribute("data-id");
+          window.location.href = `post.html?id=${postId}`;
+        });
+      });
     }
 
-    document.getElementById("createPostForm").addEventListener("submit", async e => {
-      e.preventDefault();
+    // ============================================
+    // Time ago helper
+    // ============================================
+    function timeAgo(dateString) {
+      const now = new Date();
+      const postDate = new Date(dateString);
+      const seconds = Math.floor((now - postDate) / 1000);
 
-      const post = {
-        title: postTitle.value,
-        author: postAuthor.value,
-        category: postCategory.value,
-        image_url: postImage.value,
-        description: postDescription.value
-      };
+      const intervals = [
+        { label: 'year', seconds: 31536000 },
+        { label: 'month', seconds: 2592000 },
+        { label: 'day', seconds: 86400 },
+        { label: 'hour', seconds: 3600 },
+        { label: 'minute', seconds: 60 }
+      ];
 
-      const { error } = await supabaseClient
-        .from("posts")
-        .insert([post]);
-
-      if (error) {
-        Swal.fire("Error", error.message, "error");
-        return;
+      for (const interval of intervals) {
+        const count = Math.floor(seconds / interval.seconds);
+        if (count >= 1) return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
       }
 
-      Swal.fire("Success", "Post published!", "success");
-      bootstrap.Modal.getInstance(createPostModal).hide();
-      e.target.reset();
-      loadFeedPosts();
-    });
+      return 'Just now';
+    }
   </script>
 
 </body>

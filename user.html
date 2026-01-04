@@ -645,12 +645,22 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="postImage" class="form-label">
-                                <i class="fas fa-image me-2 text-info"></i>Image URL
+                            <label class="form-label">
+                                <i class="fas fa-image me-2 text-info"></i>Post Image
                             </label>
-                            <input type="url" class="form-control" id="postImage"
-                                placeholder="https://example.com/image.jpg" required>
+
+                            <!-- Image URL -->
+                            <input type="url" class="form-control mb-2" id="postImageUrl"
+                                placeholder="Paste image URL (optional)" />
+
+                            <!-- OR Upload from Desktop -->
+                            <input type="file" class="form-control" id="postImageFile" accept="image/*" />
+
+                            <small class="text-muted">
+                                You can either paste an image URL or upload from your device
+                            </small>
                         </div>
+
 
                         <div class="mb-4">
                             <label for="postDescription" class="form-label">
@@ -691,16 +701,8 @@
         let currentUser = null;
         let allPosts = [];
 
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 100
-        });
+        AOS.init({ duration: 800, once: true, offset: 100 });
 
-        // =============================================
-        // PAGE LOAD - CHECK AUTH & LOAD POSTS
-        // =============================================
         document.addEventListener('DOMContentLoaded', async () => {
             await checkAuth();
             await loadUserPosts();
@@ -714,65 +716,59 @@
                 const { data: { user }, error } = await supabaseClient.auth.getUser();
 
                 if (error || !user) {
-                    // Redirect to login if not authenticated
                     window.location.href = 'login.html';
                     return;
                 }
 
                 currentUser = user;
-
-                // Update UI with user info
                 const email = user.email || 'user@example.com';
                 const initials = email.substring(0, 2).toUpperCase();
 
                 document.getElementById('userEmail').textContent = email;
                 document.getElementById('userAvatar').textContent = initials;
 
-                // Pre-fill author name in form
                 document.getElementById('postAuthor').value = user.user_metadata?.full_name || email.split('@')[0];
-
             } catch (error) {
                 console.error('Auth check error:', error);
                 window.location.href = 'login.html';
             }
         }
 
-        // =============================================
-        // LOGOUT FUNCTIONALITY
-        // =============================================
-        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-        // document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-
-        async function handleLogout(e) {
+        // LOG OUT USER
+        document.getElementById('logoutBtn').addEventListener('click', async (e) => {
             e.preventDefault();
 
-            try {
-                const { error } = await supabaseClient.auth.signOut();
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to log out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, log out!',
+                cancelButtonText: 'Cancel',
+            });
 
-                if (error) throw error;
+            if (result.isConfirmed) {
+                try {
+                    const { error } = await supabaseClient.auth.signOut();
+                    if (error) throw error;
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Logged Out',
-                    text: 'You have been logged out successfully.',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    window.location.href = 'login.html';
-                });
-
-            } catch (error) {
-                console.error('Logout error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Logout Failed',
-                    text: error.message
-                });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Logged Out',
+                        text: 'You have been logged out successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => window.location.href = 'login.html');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    Swal.fire({ icon: 'error', title: 'Logout Failed', text: error.message });
+                }
             }
-        }
+        });
+
 
         // =============================================
-        // LOAD USER POSTS FROM SUPABASE
+        // LOAD USER POSTS
         // =============================================
         async function loadUserPosts() {
             const loadingSpinner = document.getElementById('loadingSpinner');
@@ -782,7 +778,6 @@
                 loadingSpinner.classList.remove('d-none');
                 postsTable.classList.add('d-none');
 
-                // Fetch posts from Supabase
                 const { data: posts, error } = await supabaseClient
                     .from('posts')
                     .select('*')
@@ -792,11 +787,7 @@
                 if (error) throw error;
 
                 allPosts = posts || [];
-
-                // Update stats
                 document.getElementById('totalPosts').textContent = allPosts.length;
-
-                // Hide loading spinner
                 loadingSpinner.classList.add('d-none');
 
                 if (allPosts.length > 0) {
@@ -807,17 +798,10 @@
             } catch (error) {
                 console.error('Error loading posts:', error);
                 loadingSpinner.classList.add('d-none');
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error Loading Posts',
-                    text: error.message
-                });
+                Swal.fire({ icon: 'error', title: 'Error Loading Posts', text: error.message });
             }
         }
-        // =============================================
-        // TIME AGO HELPER FUNCTION
-        // =============================================
+
         function getTimeAgo(dateString) {
             const now = new Date();
             const postDate = new Date(dateString);
@@ -833,118 +817,93 @@
 
             for (const interval of intervals) {
                 const count = Math.floor(seconds / interval.seconds);
-                if (count >= 1) {
-                    return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
-                }
+                if (count >= 1) return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
             }
 
             return 'Just now';
         }
 
-        // =============================================
-        // RENDER POSTS IN TABLE
-        // =============================================
+        // 
         function renderPosts(posts) {
             const tbody = document.getElementById('postsTableBody');
             tbody.innerHTML = '';
-
             posts.forEach(post => {
                 const date = new Date(post.created_at);
-                const formattedDate = date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-
+                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 const row = document.createElement('tr');
                 row.innerHTML = `
-            <td>
-                <div class="post-info">
-                    <img 
-                        src="${post.image_url || 'img/no-image.png'}"
-                        alt="${post.title}"
-                        class="post-thumbnail"
-                        onerror="this.onerror=null; this.src='img/no-image.png';">
-                    <div class="post-details">
-                        <h5>${post.title}</h5>
-                        <p>By ${post.author} • ${formattedDate}</p>
+                <td>
+                    <div class="post-info">
+                        <img src="${post.image_url || 'img/no-image.png'}" alt="${post.title}" class="post-thumbnail" onerror="this.onerror=null; this.src='img/no-image.png';">
+                        <div class="post-details">
+                            <h5>${post.title}</h5>
+                            <p>By ${post.author} • ${formattedDate}</p>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td><span class="badge bg-primary">${post.category}</span></td>
-            <td><span class="status-badge status-published">Published</span></td>
-            <td>${getTimeAgo(post.created_at)}</td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-action btn-edit" onclick="editPost('${post.id}')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn-action btn-delete" onclick="deletePost('${post.id}')">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            </td>
-        `;
+                </td>
+                <td><span class="badge bg-primary">${post.category}</span></td>
+                <td><span class="status-badge status-published">Published</span></td>
+                <td>${getTimeAgo(post.created_at)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-action btn-edit" onclick="editPost('${post.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-action btn-delete" onclick="deletePost('${post.id}')"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            `;
                 tbody.appendChild(row);
             });
         }
 
-
-        // Delete Post Function
+        // Delete post
         async function deletePost(postId) {
-            try {
-                const { error } = await supabaseClient
-                    .from('posts')
-                    .delete()
-                    .eq('id', postId);
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this post?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+            });
 
-                if (error) throw error;
-
-                // Reload the posts after deletion
-                await loadUserPosts();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Post Deleted',
-                    text: 'The post has been deleted successfully.'
-                });
-            } catch (error) {
-                console.error('Error deleting post:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error Deleting Post',
-                    text: error.message
-                });
+            if (result.isConfirmed) {
+                try {
+                    const { error } = await supabaseClient.from('posts').delete().eq('id', postId);
+                    if (error) throw error;
+                    await loadUserPosts();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Post Deleted',
+                        text: 'The post has been deleted successfully.',
+                    });
+                } catch (error) {
+                    console.error('Error deleting post:', error);
+                    Swal.fire({ icon: 'error', title: 'Error Deleting Post', text: error.message });
+                }
             }
         }
 
-        // =============================================
-        // EDIT POST FUNCTION
-        // =============================================
+
         function editPost(postId) {
             const post = allPosts.find(p => p.id === postId);
             if (!post) return;
 
-            // Fill modal inputs with existing data
             document.getElementById('postId').value = post.id;
             document.getElementById('postTitle').value = post.title;
             document.getElementById('postAuthor').value = post.author;
             document.getElementById('postCategory').value = post.category;
-            document.getElementById('postImage').value = post.image_url;
+            document.getElementById('postImageUrl').value = post.image_url;
             document.getElementById('postDescription').value = post.description;
 
-            // Change modal text
             document.getElementById('modalTitle').innerText = 'Edit Post';
             document.getElementById('submitBtnText').innerText = 'Update Post';
 
-            // Open modal
             const modal = new bootstrap.Modal(document.getElementById('createPostModal'));
             modal.show();
         }
 
-
         // =============================================
-        // CREATE / UPDATE POST
+        // CREATE / UPDATE POST (SUPPORT FILE & URL)
         // =============================================
         document.getElementById('postForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -953,41 +912,55 @@
             const title = document.getElementById('postTitle').value;
             const author = document.getElementById('postAuthor').value;
             const category = document.getElementById('postCategory').value;
-            const imageUrl = document.getElementById('postImage').value;
+            const imageUrlInput = document.getElementById('postImageUrl').value.trim();
+            const imageFile = document.getElementById('postImageFile').files[0];
             const description = document.getElementById('postDescription').value;
 
             try {
+                let finalImageUrl = '';
+
+                // 1️⃣ If user uploaded a file, upload to Supabase Storage
+                if (imageFile) {
+                    const fileName = `${Date.now()}-${imageFile.name}`;
+                    const { data, error } = await supabaseClient
+                        .storage
+                        .from('post-images')
+                        .upload(fileName, imageFile);
+
+                    if (error) throw error;
+
+                    const { data: publicUrlData } = supabaseClient
+                        .storage
+                        .from('post-images')
+                        .getPublicUrl(fileName);
+
+                    finalImageUrl = publicUrlData.publicUrl;
+                }
+                // 2️⃣ Else if URL provided
+                else if (imageUrlInput !== '') {
+                    finalImageUrl = imageUrlInput;
+                }
+                // 3️⃣ If neither provided
+                else {
+                    Swal.fire({ icon: 'error', title: 'No Image', text: 'Please upload an image or provide a URL.' });
+                    return;
+                }
+
                 let response;
 
                 if (postId) {
-                    // UPDATE POST
                     response = await supabaseClient
                         .from('posts')
-                        .update({
-                            title,
-                            author,
-                            category,
-                            image_url: imageUrl,
-                            description
-                        })
+                        .update({ title, author, category, image_url: finalImageUrl, description })
                         .eq('id', postId);
                 } else {
-                    // CREATE POST
                     response = await supabaseClient
                         .from('posts')
-                        .insert([{
-                            title,
-                            author,
-                            category,
-                            image_url: imageUrl,
-                            description,
-                            user_id: currentUser.id
-                        }]);
+                        .insert([{ title, author, category, image_url: finalImageUrl, description, user_id: currentUser.id }]);
                 }
 
                 if (response.error) throw response.error;
 
-                // Reset form
                 document.getElementById('postForm').reset();
                 document.getElementById('postId').value = '';
                 document.getElementById('modalTitle').innerText = 'Create New Post';
@@ -995,31 +968,17 @@
 
                 await loadUserPosts();
 
-                bootstrap.Modal.getInstance(
-                    document.getElementById('createPostModal')
-                ).hide();
+                bootstrap.Modal.getInstance(document.getElementById('createPostModal')).hide();
 
-                Swal.fire({
-                    icon: 'success',
-                    title: postId ? 'Post Updated' : 'Post Created',
-                    text: 'Your post has been successfully ' + (postId ? 'updated.' : 'created.'),
-                    timer: 1500,
-                    showConfirmButton: false
-
-                });
+                Swal.fire({ icon: 'success', title: postId ? 'Post Updated' : 'Post Created', text: 'Your post has been successfully ' + (postId ? 'updated.' : 'created.'), timer: 1500, showConfirmButton: false });
 
             } catch (error) {
                 console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error.message
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: error.message });
             }
         });
-
-
     </script>
+
 </body>
 
 </html>
