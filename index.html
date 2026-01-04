@@ -95,29 +95,6 @@
       transform: scale(1.1);
     }
 
-    .btn-logout {
-      background-color: transparent;
-      border: 2px solid #e2e8f0;
-      color: #64748b;
-      padding: 8px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-logout:hover {
-      background-color: #fee2e2;
-      border-color: #ef4444;
-      color: #ef4444;
-    }
-
-    .post-btn {
-      background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
-    }
-
     /* Hero Section */
     .hero-section {
       padding: 2.5rem 0 1.5rem;
@@ -136,32 +113,43 @@
       font-size: 1rem;
     }
 
-    .search-bar {
-      position: relative;
-      max-width: 600px;
+    /* Category Filter UI */
+    .filter-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      max-width: 260px;
+      margin-left: auto;
     }
 
-    .search-bar input {
-      width: 100%;
-      padding: 15px 50px 15px 20px;
-      border-radius: 50px;
+    .filter-box i {
+      color: #d97706;
+      font-size: 1.1rem;
+    }
+
+    #categoryFilter {
       border: none;
-      font-size: 1rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+      cursor: pointer;
     }
 
-    .search-bar input:focus {
-      outline: none;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    #categoryFilter:focus {
+      box-shadow: none;
     }
 
-    .search-icon {
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #64748b;
-      font-size: 1.2rem;
+    /* Category badge on card */
+    .category-badge {
+      background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
     }
 
 
@@ -333,37 +321,40 @@
         <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="userAvatar">
           ?
         </div>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-          <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item text-danger" href="login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
-          </li>
-          <a href="signup.html"><button class="post-btn">Post Now</button></a>
-        </ul>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
+  <!-- Hero Section -->
   <section class="hero-section">
     <div class="container">
-      <div class="row align-items-center">
+      <div class="row align-items-center g-3">
         <div class="col-lg-8 col-md-7">
           <div class="welcome-text animate__animated animate__fadeInLeft">
-            <h1>Grab Your Coffe And Explore the Feed!</h1>
-            <p>Explore the latest blog posts from our community</p>
+            <h1>Grab Your Coffee & Explore the Feed</h1>
+            <p>Browse community posts by category</p>
           </div>
         </div>
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="Search posts, authors, or topics...">
-          <i class="fas fa-search search-icon"></i>
+
+        <div class="col-lg-4 col-md-5 text-md-end">
+          <div class="filter-box">
+            <i class="fas fa-filter"></i>
+            <select id="categoryFilter" class="form-select">
+              <option value="all">All Categories</option>
+              <option value="Technology">Technology</option>
+              <option value="Programming">Programming</option>
+              <option value="Design">Design</option>
+              <option value="Photography">Photography</option>
+              <option value="Lifestyle">Lifestyle</option>
+              <option value="Travel">Travel</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
 
   <!-- Posts Grid -->
   <section class="posts-container">
@@ -462,6 +453,7 @@
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     let currentUser = null;
+    let allPosts = [];
 
     // ============================================
     // Check auth & show dynamic email and avatar
@@ -523,47 +515,81 @@
         return;
       }
 
+      allPosts = posts;
+      renderPosts(allPosts);
+    }
+
+    function renderPosts(posts) {
+      const grid = document.getElementById("postsGrid");
+      grid.innerHTML = "";
+
+      if (posts.length === 0) {
+        grid.innerHTML = `<p class="text-center text-danger fs-3">No posts found</p>`;
+        return;
+      }
+
       posts.forEach(post => {
         const date = new Date(post.created_at).toLocaleDateString("en-US", {
-          month: "short", day: "numeric", year: "numeric"
+          month: "short",
+          day: "numeric",
+          year: "numeric"
         });
 
         grid.innerHTML += `
-        <div class="col-lg-4 col-md-6" data-aos="fade-up">
-          <div class="post-card">
-            <img
-              src="${post.image_url || 'img/no-image.png'}"
-              class="post-image"
-              onerror="this.onerror=null;this.src='img/no-image.png';"
-            >
-            <div class="post-content">
+      <div class="col-lg-4 col-md-6" data-aos="fade-up">
+        <div class="post-card">
+          <img src="${post.image_url || 'img/no-image.png'}"
+               class="post-image"
+               onerror="this.onerror=null;this.src='img/no-image.png';">
+
+          <div class="post-content">
+            <div class="d-flex justify-content-between align-items-start">
               <h3 class="post-title">${post.title}</h3>
-              <div class="post-meta">
-                <span class="fw-bold text-black"><i class="fas fa-user"></i> ${post.author}</span>
-                <span>•</span>
-                <span><i class="fas fa-calendar"></i> ${date}</span>
-              </div>
-              <p class="post-description">
-                ${(post.description || "").substring(0, 120)}...
-              </p>
-              <button class="btn btn-sm btn-dark view-details-btn" data-id="${post.id}">View details</button>
+              <span class="category-badge">${post.category}</span>
             </div>
+
+            <div class="post-meta">
+              <span class="fw-bold text-black">
+                <i class="fas fa-user"></i> ${post.author}
+              </span>
+              <span>•</span>
+              <span><i class="fas fa-calendar"></i> ${date}</span>
+            </div>
+
+            <p class="post-description">
+              ${(post.description || "").substring(0, 120)}...
+            </p>
+
+            <button class="btn btn-sm btn-dark view-details-btn" data-id="${post.id}">
+              View details
+            </button>
           </div>
         </div>
-      `;
+      </div>
+    `;
       });
 
       AOS.refresh();
 
-      // Add click event to all "View details" buttons
       document.querySelectorAll(".view-details-btn").forEach(btn => {
         btn.addEventListener("click", () => {
-          const postId = btn.getAttribute("data-id");
-          window.location.href = `post.html?id=${postId}`;
+          window.location.href = `post.html?id=${btn.dataset.id}`;
         });
       });
-
     }
+
+    document.getElementById("categoryFilter").addEventListener("change", () => {
+  const selectedCategory = categoryFilter.value;
+
+  if (selectedCategory === "all") {
+    renderPosts(allPosts);
+  } else {
+    const filteredPosts = allPosts.filter(
+      post => post.category === selectedCategory
+    );
+    renderPosts(filteredPosts);
+  }
+});
 
     // ============================================
     // Time ago helper
