@@ -45,6 +45,25 @@
       color: #1e293b;
     }
 
+    .nav-link {
+      color: #64748b;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      margin: 0 5px;
+    }
+
+    .nav-link:hover {
+      background-color: #f1f5f9;
+      color: #1e293b;
+    }
+
+    .nav-link.active {
+      background-color: #1e293b;
+      color: white;
+    }
+
     .user-info {
       display: flex;
       align-items: center;
@@ -300,7 +319,14 @@
         </div>
         POST App
       </a>
-
+      <div class="nav-links d-none d-md-flex mx-auto">
+        <a class="nav-link active" href="index.html">
+          <i class="fas fa-home me-1"></i> Feed
+        </a>
+        <a class="nav-link" href="user.html">
+          <i class="fas fa-folder me-1"></i> My Posts
+        </a>
+      </div>
       <div class="user-info ms-auto">
         <!-- Add this element to display the email dynamically -->
         <span class="user-email d-none d-md-inline" id="navbarEmail">Loading...</span>
@@ -423,7 +449,6 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- SupaBase Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script>
     AOS.init({
       duration: 800,
@@ -431,6 +456,7 @@
       offset: 100
     });
 
+    // Initialize Supabase
     const supabaseUrl = "https://qmujsllexgevhzpkuygo.supabase.co";
     const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -438,7 +464,7 @@
     let currentUser = null;
 
     // ============================================
-    // Check auth & show dynamic email
+    // Check auth & show dynamic email and avatar
     // ============================================
     document.addEventListener("DOMContentLoaded", async () => {
       await checkAuth();
@@ -449,7 +475,7 @@
       try {
         const { data: { user }, error } = await supabaseClient.auth.getUser();
         if (error || !user) {
-          window.location.href = "login.html";
+          window.location.href = "signup.html";
           return;
         }
 
@@ -460,6 +486,16 @@
         if (navbarEmail) {
           navbarEmail.textContent = user.email || "user@example.com";
         }
+
+        // Set avatar to initials if no image is available
+        const userAvatarElement = document.getElementById('userAvatar');
+        if (userAvatarElement) {
+          const initials = user.email.substring(0, 2).toUpperCase();  // Use the first two characters of the email as initials
+          userAvatarElement.textContent = initials;
+        }
+
+        // Set the author's name for posts
+        document.getElementById('postAuthor').value = user.user_metadata?.full_name || user.email.split('@')[0];
 
       } catch (err) {
         console.error(err);
@@ -493,28 +529,28 @@
         });
 
         grid.innerHTML += `
-      <div class="col-lg-4 col-md-6" data-aos="fade-up">
-        <div class="post-card">
-          <img
-            src="${post.image_url || 'img/no-image.png'}"
-            class="post-image"
-            onerror="this.onerror=null;this.src='img/no-image.png';"
-          >
-          <div class="post-content">
-            <h3 class="post-title">${post.title}</h3>
-            <div class="post-meta">
-              <span class="fw-bold text-black"><i class="fas fa-user"></i> ${post.author}</span>
-              <span>•</span>
-              <span><i class="fas fa-calendar"></i> ${date}</span>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up">
+          <div class="post-card">
+            <img
+              src="${post.image_url || 'img/no-image.png'}"
+              class="post-image"
+              onerror="this.onerror=null;this.src='img/no-image.png';"
+            >
+            <div class="post-content">
+              <h3 class="post-title">${post.title}</h3>
+              <div class="post-meta">
+                <span class="fw-bold text-black"><i class="fas fa-user"></i> ${post.author}</span>
+                <span>•</span>
+                <span><i class="fas fa-calendar"></i> ${date}</span>
+              </div>
+              <p class="post-description">
+                ${(post.description || "").substring(0, 120)}...
+              </p>
+              <button class="btn btn-sm btn-dark view-details-btn" data-id="${post.id}">View details</button>
             </div>
-            <p class="post-description">
-              ${(post.description || "").substring(0, 120)}...
-            </p>
-            <button class="btn btn-sm btn-dark view-details-btn" data-id="${post.id}">View details</button>
           </div>
         </div>
-      </div>
-    `;
+      `;
       });
 
       AOS.refresh();
@@ -526,6 +562,7 @@
           window.location.href = `post.html?id=${postId}`;
         });
       });
+
     }
 
     // ============================================
