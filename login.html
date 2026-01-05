@@ -483,9 +483,7 @@
       handleLoginPage();
     });
 
-    // =============================================
-    // LOGIN FUNCTION
-    // =============================================
+    // LOGIN FUNCTION (NO ADMIN)
     function handleLoginPage() {
       const form = document.querySelector("form");
       const emailInput = document.getElementById("emailInput");
@@ -508,20 +506,6 @@
           return;
         }
 
-        // ADMIN LOGIN (Hard-coded)
-        if (email === "hina@yahoo.com" && password === "123456") {
-          Swal.fire({
-            icon: "success",
-            title: "Admin Login Successful!",
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            window.location.href = "dashboard.html";
-          });
-          return;
-        }
-
-        // NORMAL USER LOGIN
         try {
           const { error } = await supabaseClient.auth.signInWithPassword({
             email,
@@ -533,11 +517,13 @@
           Swal.fire({
             icon: "success",
             title: "Login Successful!",
+            text: "Redirecting to feed...",
             showConfirmButton: false,
             timer: 2000,
           }).then(() => {
             window.location.href = "index.html";
           });
+
         } catch (error) {
           Swal.fire({
             icon: "error",
@@ -548,6 +534,7 @@
       });
     }
   </script>
+
 </body>
 
 </html>
