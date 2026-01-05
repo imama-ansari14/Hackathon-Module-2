@@ -94,17 +94,27 @@
     .user-avatar {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
       color: white;
       font-weight: 600;
       font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
+
+    .user-avatar img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
 
     .user-avatar:hover {
       transform: scale(1.1);
@@ -313,14 +323,14 @@
 </head>
 
 <body>
-  <!-- Navbar -->
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <a class="navbar-brand" href="#">
         <div class="brand-icon">
-          <img src="img/logo.png" alt="">
+          <img src="img/logo.png" alt="logo" >
         </div>
-        POST App
+        Postagram
       </a>
 
       <div class="nav-links mx-auto d-flex flex-wrap justify-content-center">
@@ -333,14 +343,34 @@
       </div>
 
       <div class="user-info ms-auto">
-        <!-- Add this element to display the email dynamically -->
         <span class="user-email d-none d-md-inline" id="navbarEmail">Loading...</span>
-        <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="userAvatar">
-          ?
+
+        <div class="dropdown">
+          <div class="user-avatar dropdown-toggle" id="userAvatar" data-bs-toggle="dropdown" aria-expanded="false">
+            <span id="avatarInitials">?</span>
+            <img id="avatarImage" src="" alt="avatar">
+          </div>
+
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" href="user.html">
+                <i class="fas fa-user me-2"></i> Profile
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item text-danger" href="#" id="logoutBtn">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </nav>
+
 
   <!-- Hero Section -->
   <section class="hero-section">
@@ -456,6 +486,8 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- SupaBase Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!--  -->
   <script>
     AOS.init({
       duration: 800,
@@ -482,28 +514,44 @@
     async function checkAuth() {
       try {
         const { data: { user }, error } = await supabaseClient.auth.getUser();
+
         if (error || !user) {
-          window.location.href = "signup.html";
+          window.location.href = "login.html";
           return;
         }
 
         currentUser = user;
 
-        // Update navbar email dynamically
-        const navbarEmail = document.getElementById("navbarEmail");
-        if (navbarEmail) {
-          navbarEmail.textContent = user.email || "user@example.com";
+        // Email
+        document.getElementById("navbarEmail").textContent = user.email;
+
+        const name =
+          user.user_metadata?.full_name || user.email.split("@")[0];
+
+        const initials = name.substring(0, 2).toUpperCase();
+        const avatarUrl = user.user_metadata?.avatar_url || null;
+
+        const avatarInitials = document.getElementById("avatarInitials");
+        const avatarImage = document.getElementById("avatarImage");
+
+        // Initials
+        avatarInitials.textContent = initials;
+
+        // Profile image logic
+        if (avatarUrl) {
+          avatarImage.src = avatarUrl;
+          avatarImage.style.display = "block";
+          avatarInitials.style.display = "none";
+        } else {
+          avatarImage.style.display = "none";
+          avatarInitials.style.display = "flex";
         }
 
-        // Set avatar to initials if no image is available
-        const userAvatarElement = document.getElementById('userAvatar');
-        if (userAvatarElement) {
-          const initials = user.email.substring(0, 2).toUpperCase();  // Use the first two characters of the email as initials
-          userAvatarElement.textContent = initials;
+        // Author name for posts
+        const postAuthor = document.getElementById("postAuthor");
+        if (postAuthor) {
+          postAuthor.value = name;
         }
-
-        // Set the author's name for posts
-        document.getElementById('postAuthor').value = user.user_metadata?.full_name || user.email.split('@')[0];
 
       } catch (err) {
         console.error(err);

@@ -201,10 +201,13 @@
     }
 
     @keyframes float {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: translateY(0) translateX(0);
         opacity: 0.4;
       }
+
       50% {
         transform: translateY(-30px) translateX(20px);
         opacity: 0.6;
@@ -440,7 +443,8 @@
           </div>
 
           <div class="forgot-password">
-            <a href="#" onclick="event.preventDefault(); alert('Password reset feature coming soon!');">Forgot Password?</a>
+            <a href="#" onclick="event.preventDefault(); alert('Password reset feature coming soon!');">Forgot
+              Password?</a>
           </div>
 
           <button type="submit" class="btn btn-primary">
@@ -448,7 +452,7 @@
           </button>
 
           <div class="signup-link">
-            Don't have an account? <a href="index.html">Sign up</a>
+            Don't have an account? <a href="signup.html">Sign up</a>
           </div>
         </form>
       </div>
@@ -532,7 +536,7 @@
             showConfirmButton: false,
             timer: 2000,
           }).then(() => {
-            window.location.href = "user.html";
+            window.location.href = "index.html";
           });
         } catch (error) {
           Swal.fire({
