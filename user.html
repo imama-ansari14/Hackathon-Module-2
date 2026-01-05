@@ -68,6 +68,21 @@
             color: white;
         }
 
+        /* Ensure buttons look good on all screen sizes */
+        .nav-links a {
+            padding: 8px 16px;
+            margin: 5px;
+            font-weight: 500;
+        }
+
+        /* Optionally, reduce button size on small screens if needed */
+        @media (max-width: 576px) {
+            .nav-links a {
+                font-size: 0.9rem;
+                /* Adjust size for small screens */
+            }
+        }
+
         .user-info {
             display: flex;
             align-items: center;
@@ -97,25 +112,6 @@
 
         .user-avatar:hover {
             transform: scale(1.1);
-        }
-
-        .btn-logout {
-            background-color: transparent;
-            border: 2px solid #e2e8f0;
-            color: #64748b;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-logout:hover {
-            background-color: #fee2e2;
-            border-color: #ef4444;
-            color: #ef4444;
         }
 
         /* Header Section */
@@ -470,7 +466,7 @@
                 Postagram
             </a>
 
-            <div class="nav-links d-none d-md-flex mx-auto">
+            <div class="nav-links mx-auto d-flex flex-wrap justify-content-center">
                 <a class="nav-link" href="index.html">
                     <i class="fas fa-home me-1"></i> Feed
                 </a>
@@ -479,6 +475,7 @@
                 </a>
             </div>
 
+
             <div class="user-info ms-auto">
                 <span class="user-email d-none d-md-inline" id="userEmail">Loading...</span>
                 <div class="user-avatar" data-bs-toggle="dropdown" aria-expanded="false" id="userAvatar">
@@ -486,16 +483,12 @@
                 </div>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
-                    <!-- <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li> -->
                     <li>
                         <hr class="dropdown-divider">
                     </li>
                     <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i
                                 class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                 </ul>
-                <button class="btn btn-logout d-none d-md-flex" onclick="window.location.href='login.html'">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
             </div>
         </div>
     </nav>
@@ -528,17 +521,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
-                            <div class="stats-card">
-                                <div class="stats-icon">
-                                    <i class="fas fa-eye"></i>
-                                </div>
-                                <div class="stats-info">
-                                    <h3 id="totalViews">0</h3>
-                                    <p>Total Views</p>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -766,7 +749,6 @@
             }
         });
 
-
         // =============================================
         // LOAD USER POSTS
         // =============================================
@@ -788,11 +770,12 @@
 
                 allPosts = posts || [];
                 document.getElementById('totalPosts').textContent = allPosts.length;
+
                 loadingSpinner.classList.add('d-none');
 
                 if (allPosts.length > 0) {
                     postsTable.classList.remove('d-none');
-                    renderPosts(allPosts);
+                    applyCategoryFilter(); // 🔑 IMPORTANT
                 }
 
             } catch (error) {
@@ -802,6 +785,9 @@
             }
         }
 
+        // =============================================
+        // TIME AGO FUNCTION
+        // =============================================
         function getTimeAgo(dateString) {
             const now = new Date();
             const postDate = new Date(dateString);
@@ -823,13 +809,51 @@
             return 'Just now';
         }
 
-        // 
+        // =============================================
+        // APPLY CATEGORY FILTER
+        // =============================================
+        document.getElementById('categoryFilter').addEventListener('change', applyCategoryFilter);
+
+        function applyCategoryFilter() {
+            const selectedCategory = document.getElementById('categoryFilter').value;
+
+            let filteredPosts = allPosts;
+
+            if (selectedCategory !== 'all') {
+                const normalized = selectedCategory.toLowerCase().trim();
+                filteredPosts = allPosts.filter(post =>
+                    (post.category || '').toLowerCase().trim() === normalized
+                );
+            }
+
+            renderPosts(filteredPosts);
+        }
+
+        // =============================================
+        // RENDER POSTS
+        // =============================================
         function renderPosts(posts) {
             const tbody = document.getElementById('postsTableBody');
             tbody.innerHTML = '';
+
+            if (posts.length === 0) {
+                tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-danger py-4 fs-5">
+                        No posts found for this category
+                    </td>
+                </tr>
+            `;
+                return;
+            }
+
             posts.forEach(post => {
                 const date = new Date(post.created_at);
-                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
                 const row = document.createElement('tr');
                 row.innerHTML = `
                 <td>
@@ -855,7 +879,7 @@
             });
         }
 
-        // Delete post
+        // DELETE POST
         async function deletePost(postId) {
             const result = await Swal.fire({
                 title: 'Are you sure?',
@@ -883,7 +907,7 @@
             }
         }
 
-
+        // EDIT POST
         function editPost(postId) {
             const post = allPosts.find(p => p.id === postId);
             if (!post) return;
@@ -978,6 +1002,7 @@
             }
         });
     </script>
+
 
 </body>
 
