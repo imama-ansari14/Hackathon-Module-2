@@ -476,6 +476,9 @@
     const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (user) window.location.href = "index.html";
+
     // =============================================
     // PAGE LOAD
     // =============================================
