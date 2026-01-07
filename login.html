@@ -476,17 +476,27 @@
     const supabaseKey = "sb_publishable_4HLArwo3ZhIorJ15ag0K3Q_o0do1Vk2";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (user) window.location.href = "index.html";
+    // =============================================
+    // CHECK EXISTING SESSION (FIXED)
+    // =============================================
+    async function checkExistingSession() {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (user) {
+        window.location.href = "index.html";
+      }
+    }
 
     // =============================================
     // PAGE LOAD
     // =============================================
-    document.addEventListener("DOMContentLoaded", () => {
-      handleLoginPage();
+    document.addEventListener("DOMContentLoaded", async () => {
+      await checkExistingSession();   
+      handleLoginPage();     
     });
 
-    // LOGIN FUNCTION (NO ADMIN)
+    // =============================================
+    // LOGIN FUNCTION
+    // =============================================
     function handleLoginPage() {
       const form = document.querySelector("form");
       const emailInput = document.getElementById("emailInput");
@@ -537,6 +547,7 @@
       });
     }
   </script>
+
 
 </body>
 
